@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import userRoutes from './routes/users.routes';
 
 dotenv.config();
 
@@ -14,19 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health check
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Routes
-app.use('/api/users', userRoutes);
-
-// 404 handler
-app.use((req: Request, res: Response) => {
-  res.status(404).json({ 
-    success: false, 
-    error: 'Route not found' 
-  });
 });
 
 // Start server (only if not in test environment)
