@@ -1,0 +1,84 @@
+import { useState } from 'react';
+import { User, ApiResponse } from '@repo/shared';
+
+export function CreateUserForm() {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<User | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, name }),
+      });
+
+      const data: ApiResponse<User> = await response.json();
+
+      if (data.success && data.data) {
+        setSuccess(data.data);
+        setEmail('');
+        setName('');
+      } else {
+        setError(data.error || 'Error creating user');
+      }
+    } catch (err) {
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="create-user-form">
+      <h2>Create New User</h2>
+      
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Creating...' : 'Create User'}
+        </button>
+      </form>
+
+      {error && <div className="error">{error}</div>}
+      {success && (
+        <div className="success">
+          User created: {success.name} ({success.email})
+        </div>
+      )}
+    </div>
+  );
+}
