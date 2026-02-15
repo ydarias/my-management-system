@@ -12,17 +12,11 @@ export class ValidateCredentialsUseCase {
   async execute(email: string, password: string): Promise<User> {
     const user = await this.userRepository.findByEmail(email);
 
-    console.log(`Got user: ${user}`);
-
     if (!user) {
       throw new InvalidCredentialsError();
     }
 
-    console.log(`Got user: ${user}`);
-
     const isValid = await this.passwordHasher.compare(password, user.password);
-
-    console.log(`Is valid: ${isValid}`);
 
     if (!isValid) {
       throw new InvalidCredentialsError();
