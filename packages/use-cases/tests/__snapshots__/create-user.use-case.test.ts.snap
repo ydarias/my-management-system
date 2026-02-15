@@ -6,6 +6,7 @@ exports[`CreateUserUseCase should create a new user successfully 1`] = `
   "email": "test@example.com",
   "id": 1,
   "name": "Test User",
+  "password": "hashed-secret123",
   "updatedAt": Any<Date>,
 }
 `;

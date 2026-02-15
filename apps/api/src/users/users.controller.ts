@@ -8,8 +8,10 @@ export class UsersController {
     private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
+  // TODO use mapping to avoid returning data that should not be returned
   @Post()
   async createUser(@Body() input: CreateUserInput) {
-    return await this.createUserUseCase.execute(input);
+    const { password, ...user } = await this.createUserUseCase.execute(input);
+    return user;
   }
 }
