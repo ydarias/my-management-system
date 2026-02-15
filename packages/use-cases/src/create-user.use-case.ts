@@ -1,6 +1,7 @@
-import { User } from '@repo/shared';
-import { CreateUserInput } from './create-user.input';
-import { UserRepository } from './user.repository';
+
+import { CreateUserInput } from './models/creational/create-user.input';
+import { UserRepository } from './repositories/user.repository';
+import { User } from './models/user';
 
 export class CreateUserUseCase {
   constructor(private userRepository: UserRepository) {}

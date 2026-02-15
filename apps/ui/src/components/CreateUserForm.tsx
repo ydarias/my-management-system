@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { User, ApiResponse } from '@repo/shared';
+import { ApiResponse } from '@repo/shared';
+import { User } from '@repo/use-cases';
 
 export function CreateUserForm() {
   const [email, setEmail] = useState('');
@@ -42,7 +43,7 @@ export function CreateUserForm() {
   return (
     <div className="create-user-form">
       <h2>Create New User</h2>
-      
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>

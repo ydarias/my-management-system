@@ -1,4 +1,4 @@
-import { User } from '@repo/shared';
+import { User } from '../models/user';
 
 export interface UserRepository {
   save(user: User): Promise<User>;
