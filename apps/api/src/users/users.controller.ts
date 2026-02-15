@@ -1,5 +1,5 @@
-import { Body, Controller, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
-import { CreateUserUseCase, CreateUserInput, UserAlreadyExistsError } from '@repo/use-cases';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { CreateUserUseCase, CreateUserInput } from '@repo/use-cases';
 
 @Controller('users')
 export class UsersController {
@@ -10,13 +10,6 @@ export class UsersController {
 
   @Post()
   async createUser(@Body() input: CreateUserInput) {
-    try {
-      return await this.createUserUseCase.execute(input);
-    } catch (error) {
-      if (error instanceof UserAlreadyExistsError) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-      throw error;
-    }
+    return await this.createUserUseCase.execute(input);
   }
 }
