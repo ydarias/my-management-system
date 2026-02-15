@@ -1,5 +1,4 @@
-import { CreateUserUseCase } from '../src/create-user.use-case';
-import { CreateUserInput, UserAlreadyExistsError, UserRepository } from '../src';
+import { CreateUserInput, CreateUserUseCase, UserAlreadyExistsError, UserRepository } from '../src';
 import { InMemoryUserRepository } from '../src/repositories/in-memory/in-memory-user.repository';
 
 describe('CreateUserUseCase', () => {
@@ -19,10 +18,10 @@ describe('CreateUserUseCase', () => {
 
     const result = await useCase.execute(input);
 
-    expect(result).toHaveProperty('id');
-    expect(result.email).toBe(input.email);
-    expect(result.name).toBe(input.name);
-    expect(result.createdAt).toBeInstanceOf(Date);
+    expect(result).toMatchSnapshot({
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date)
+    });
   });
 
   it('should throw error if user with email already exists', async () => {
@@ -50,6 +49,7 @@ describe('CreateUserUseCase', () => {
     const user1 = await useCase.execute(input1);
     const user2 = await useCase.execute(input2);
 
-    expect(user1.id).not.toBe(user2.id);
+    expect(user1.id).toBe(1);
+    expect(user2.id).toBe(2);
   });
 });

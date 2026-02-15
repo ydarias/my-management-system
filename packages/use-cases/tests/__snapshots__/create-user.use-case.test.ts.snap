@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CreateUserUseCase should create a new user successfully 1`] = `
+{
+  "createdAt": Any<Date>,
+  "email": "test@example.com",
+  "id": 1,
+  "name": "Test User",
+  "updatedAt": Any<Date>,
+}
+`;

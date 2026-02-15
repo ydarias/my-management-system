@@ -15,16 +15,11 @@ export class CreateUserUseCase {
     }
 
     const user: User = {
-      id: this.generateId(),
       email: input.email,
       name: input.name,
       createdAt: new Date(),
     };
 
     return this.userRepository.save(user);
-  }
-
-  private generateId(): string {
-    return `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 }
