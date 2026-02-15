@@ -1,155 +1,155 @@
 # Turborepo + TypeScript Monorepo
 
-Proyecto monorepo configurado con Turborepo, TypeScript y una arquitectura modular que separa los casos de uso de la UI y la API.
+Monorepo project configured with Turborepo, TypeScript, and a modular architecture that separates use cases from the UI and API.
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 turborepo-project/
 ├── apps/
-│   ├── api/              # API REST con Express
+│   ├── api/              # REST API with Express
 │   │   ├── src/
 │   │   │   ├── routes/
 │   │   │   ├── repositories/
 │   │   │   └── index.ts
 │   │   └── tests/
-│   └── ui/               # Aplicación React con Vite
+│   └── ui/               # React Application with Vite
 │       ├── src/
 │       │   └── components/
 │       └── tests/
 ├── packages/
-│   ├── shared/           # Tipos y utilidades compartidas
+│   ├── shared/           # Shared types and utilities
 │   │   ├── src/
 │   │   │   ├── types/
 │   │   │   └── utils/
 │   │   └── tests/
-│   ├── use-cases/        # Lógica de negocio (casos de uso)
+│   ├── use-cases/        # Business logic (use cases)
 │   │   ├── src/
 │   │   └── tests/
-│   └── test-config/      # Configuración compartida de Jest
+│   └── test-config/      # Shared Jest configuration
 │       └── jest.config.js
-├── turbo.json            # Configuración de Turborepo
-├── tsconfig.base.json    # TypeScript config base
+├── turbo.json            # Turborepo configuration
+├── tsconfig.base.json    # Base TypeScript config
 └── package.json          # Root package.json
 ```
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
-### Separación de Responsabilidades
+### Separation of Concerns
 
-- **`@repo/shared`**: Tipos TypeScript, interfaces y utilidades compartidas por todo el monorepo
-- **`@repo/use-cases`**: Lógica de negocio pura, independiente de infraestructura
-- **`@repo/api`**: Capa de API REST que consume los casos de uso
-- **`@repo/ui`**: Interfaz de usuario React que consume la API
-- **`@repo/test-config`**: Configuración compartida del test harness (Jest)
+- **`@repo/shared`**: TypeScript types, interfaces, and utilities shared across the monorepo
+- **`@repo/use-cases`**: Pure business logic, independent of infrastructure
+- **`@repo/api`**: REST API layer that consumes the use cases
+- **`@repo/ui`**: React user interface that consumes the API
+- **`@repo/test-config`**: Shared test harness configuration (Jest)
 
-### Ventajas de esta Arquitectura
+### Advantages of This Architecture
 
-1. **Reutilización**: Los casos de uso pueden ser consumidos tanto por la API como directamente por la UI
-2. **Testabilidad**: Cada capa tiene sus propios tests con configuración compartida
-3. **Mantenibilidad**: Cambios en la lógica de negocio no afectan directamente a la UI o API
-4. **Escalabilidad**: Fácil añadir nuevas apps o packages al monorepo
+1. **Reusability**: Use cases can be consumed by both the API and directly by the UI
+2. **Testability**: Each layer has its own tests with shared configuration
+3. **Maintainability**: Changes to business logic do not directly affect the UI or API
+4. **Scalability**: Easy to add new apps or packages to the monorepo
 
-## 🚀 Instalación
+## 🚀 Installation
 
 ```bash
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Instalar dependencias de todos los workspaces
+# Install dependencies for all workspaces
 npm install --workspaces
 ```
 
-## 📦 Comandos Disponibles
+## 📦 Available Commands
 
-### Desarrollo
+### Development
 
 ```bash
-# Iniciar todos los proyectos en modo desarrollo
+# Start all projects in development mode
 npm run dev
 
-# Iniciar solo la API
+# Start only the API
 npm run dev --workspace=@repo/api
 
-# Iniciar solo la UI
+# Start only the UI
 npm run dev --workspace=@repo/ui
 ```
 
 ### Build
 
 ```bash
-# Build de todos los proyectos
+# Build all projects
 npm run build
 
-# Build de un proyecto específico
+# Build a specific project
 npm run build --workspace=@repo/use-cases
 ```
 
 ### Testing
 
 ```bash
-# Ejecutar todos los tests
+# Run all tests
 npm run test
 
-# Tests con coverage
+# Tests with coverage
 npm run test --workspace=@repo/use-cases -- --coverage
 
-# Tests en modo watch
+# Tests in watch mode
 npm run test --workspace=@repo/api -- --watch
 ```
 
-### Otros
+### Other
 
 ```bash
 # Linting
 npm run lint
 
-# Formateo con Prettier
+# Formatting with Prettier
 npm run format
 
-# Limpiar archivos generados
+# Clean generated files
 npm run clean
 ```
 
-## 🧪 Test Harness Compartido
+## 🧪 Shared Test Harness
 
-Todos los paquetes utilizan la misma configuración base de Jest ubicada en `@repo/test-config`:
+All packages use the same base Jest configuration located in `@repo/test-config`:
 
 ```javascript
-// En cada jest.config.js
+// In each jest.config.js
 const baseConfig = require('@repo/test-config/jest.config');
 
 module.exports = {
   ...baseConfig,
-  displayName: 'nombre-del-paquete',
-  // Configuración específica del paquete
+  displayName: 'package-name',
+  // Package-specific configuration
 };
 ```
 
-### Características del Test Harness
+### Test Harness Features
 
-- **ts-jest** para soporte de TypeScript
-- **Path aliases** con `@/` para imports relativos
-- **Coverage** configurado por defecto
-- **Timeout** de 10 segundos por test
-- Soporte para `.spec.ts` y `.test.ts`
+- **ts-jest** for TypeScript support
+- **Path aliases** with `@/` for relative imports
+- **Coverage** configured by default
+- **Timeout** of 10 seconds per test
+- Support for `.spec.ts` and `.test.ts`
 
-## 🔄 Flujo de Desarrollo
+## 🔄 Development Workflow
 
-### Añadir un Nuevo Caso de Uso
+### Adding a New Use Case
 
-1. Crear el caso de uso en `packages/use-cases/src/`
-2. Escribir tests en `packages/use-cases/tests/`
-3. Exportar desde `packages/use-cases/src/index.ts`
-4. Consumir desde la API o UI
+1. Create the use case in `packages/use-cases/src/`
+2. Write tests in `packages/use-cases/tests/`
+3. Export from `packages/use-cases/src/index.ts`
+4. Consume from the API or UI
 
-Ejemplo:
+Example:
 
 ```typescript
 // packages/use-cases/src/my-use-case.ts
 export class MyUseCase {
   async execute(input: MyInput): Promise<MyOutput> {
-    // Lógica de negocio
+    // Business logic
   }
 }
 
@@ -160,50 +160,50 @@ const useCase = new MyUseCase(dependencies);
 const result = await useCase.execute(input);
 ```
 
-### Añadir una Nueva App
+### Adding a New App
 
 ```bash
-mkdir -p apps/nueva-app
-cd apps/nueva-app
+mkdir -p apps/new-app
+cd apps/new-app
 npm init -y
 ```
 
-Luego añadir las dependencias necesarias y configurar TypeScript.
+Then add the necessary dependencies and configure TypeScript.
 
-## 🌐 Endpoints de la API
+## 🌐 API Endpoints
 
-La API corre por defecto en `http://localhost:3001`:
+The API runs by default on `http://localhost:3001`:
 
 - `GET /health` - Health check
-- `POST /api/users` - Crear usuario
-- `GET /api/users` - Listar usuarios
-- `GET /api/users/:id` - Obtener usuario por ID
+- `POST /api/users` - Create user
+- `GET /api/users` - List users
+- `GET /api/users/:id` - Get user by ID
 
 ## 🎨 UI
 
-La UI corre por defecto en `http://localhost:3000` y se conecta automáticamente a la API mediante proxy configurado en Vite.
+The UI runs by default on `http://localhost:3000` and automatically connects to the API via the proxy configured in Vite.
 
-## 📝 Notas Importantes
+## 📝 Important Notes
 
-- **TypeScript References**: Los packages usan project references de TypeScript para builds incrementales
-- **Workspaces**: npm workspaces maneja las dependencias internas automáticamente
-- **Turbo Cache**: Turborepo cachea los resultados de builds y tests para mayor velocidad
-- **Test Isolation**: Cada package tiene sus propios tests pero comparte configuración
+- **TypeScript References**: Packages use TypeScript project references for incremental builds
+- **Workspaces**: npm workspaces handles internal dependencies automatically
+- **Turbo Cache**: Turborepo caches build and test results for improved speed
+- **Test Isolation**: Each package has its own tests but shares configuration
 
-## 🔧 Configuración de TypeScript
+## 🔧 TypeScript Configuration
 
-El proyecto usa una configuración base compartida (`tsconfig.base.json`) que es extendida por cada package/app según sus necesidades específicas.
+The project uses a shared base configuration (`tsconfig.base.json`) that is extended by each package/app according to its specific needs.
 
-## 🎯 Próximos Pasos
+## 🎯 Next Steps
 
-1. Configurar ESLint para linting de código
-2. Añadir más casos de uso según las necesidades del negocio
-3. Implementar autenticación y autorización
-4. Añadir base de datos real (PostgreSQL, MongoDB, etc.)
-5. Configurar CI/CD con GitHub Actions o similar
-6. Añadir Storybook para documentación de componentes UI
+1. Configure ESLint for code linting
+2. Add more use cases based on business needs
+3. Implement authentication and authorization
+4. Add a real database (PostgreSQL, MongoDB, etc.)
+5. Set up CI/CD with GitHub Actions or similar
+6. Add Storybook for UI component documentation
 
-## 📚 Recursos
+## 📚 Resources
 
 - [Turborepo Documentation](https://turbo.build/repo/docs)
 - [npm Workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces)

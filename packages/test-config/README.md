@@ -1,25 +1,25 @@
 # @repo/test-config
 
-Configuración compartida de Jest para todos los paquetes del monorepo.
+Shared Jest configuration for all monorepo packages.
 
-## Uso
+## Usage
 
-En el `jest.config.js` de tu paquete:
+In your package's `jest.config.js`:
 
 ```javascript
 const baseConfig = require('@repo/test-config/jest.config');
 
 module.exports = {
   ...baseConfig,
-  displayName: 'tu-paquete',
-  // Añade configuración específica aquí
+  displayName: 'your-package',
+  // Add package-specific configuration here
 };
 ```
 
-## Características
+## Features
 
-- Preset de `ts-jest` para soporte de TypeScript
-- Paths de importación con alias `@/`
-- Cobertura de código configurada
-- Timeout de 10 segundos por test
-- Soporte para archivos `.spec.ts` y `.test.ts`
+- `ts-jest` preset for TypeScript support
+- Import path aliases with `@/`
+- Code coverage configured
+- 10-second timeout per test
+- Support for `.spec.ts` and `.test.ts` files

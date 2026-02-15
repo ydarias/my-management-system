@@ -1,119 +1,119 @@
-# Instrucciones de Instalación
+# Installation Instructions
 
-## Requisitos Previos
+## Prerequisites
 
 - Node.js >= 18.0.0
 - npm >= 10.2.4
 
-## Pasos para Ejecutar el Proyecto
+## Steps to Run the Project
 
-### 1. Instalar Dependencias
+### 1. Install Dependencies
 
 ```bash
-# Desde la raíz del proyecto
+# From the project root
 npm install
 ```
 
-Este comando instalará todas las dependencias en todos los workspaces del monorepo.
+This command will install all dependencies across all monorepo workspaces.
 
-### 2. Compilar los Packages
+### 2. Build the Packages
 
 ```bash
-# Compilar todos los packages
+# Build all packages
 npm run build
 ```
 
-Esto compilará:
+This will build:
 - `@repo/shared`
 - `@repo/use-cases`
 - `@repo/test-config`
 
-### 3. Iniciar la API
+### 3. Start the API
 
 ```bash
-# En una terminal
+# In a terminal
 cd apps/api
 cp .env.example .env
 npm run dev
 ```
 
-La API estará disponible en `http://localhost:3001`
+The API will be available at `http://localhost:3001`
 
-### 4. Iniciar la UI
+### 4. Start the UI
 
 ```bash
-# En otra terminal
+# In another terminal
 cd apps/ui
 npm run dev
 ```
 
-La UI estará disponible en `http://localhost:3000`
+The UI will be available at `http://localhost:3000`
 
-### 5. Ejecutar Tests
+### 5. Run Tests
 
 ```bash
-# Desde la raíz del proyecto
+# From the project root
 npm run test
 ```
 
-O para un package específico:
+Or for a specific package:
 
 ```bash
 npm run test --workspace=@repo/use-cases
 ```
 
-## Comandos Útiles
+## Useful Commands
 
 ```bash
-# Ejecutar todos los proyectos en modo desarrollo (desde la raíz)
+# Run all projects in development mode (from the root)
 npm run dev
 
-# Build de todo el proyecto
+# Build the entire project
 npm run build
 
-# Ejecutar tests con coverage
+# Run tests with coverage
 npm run test -- --coverage
 
-# Formatear código
+# Format code
 npm run format
 
-# Limpiar archivos generados
+# Clean generated files
 npm run clean
 ```
 
-## Verificación de la Instalación
+## Verifying the Installation
 
-1. Verifica que la API responde:
+1. Verify the API is responding:
    ```bash
    curl http://localhost:3001/health
    ```
-   
-   Deberías ver:
+
+   You should see:
    ```json
    {"status":"ok","timestamp":"..."}
    ```
 
-2. Abre el navegador en `http://localhost:3000` y deberías ver el formulario de creación de usuarios.
+2. Open your browser at `http://localhost:3000` and you should see the user creation form.
 
-3. Crea un usuario de prueba y verifica que funciona correctamente.
+3. Create a test user and verify it works correctly.
 
-## Solución de Problemas
+## Troubleshooting
 
 ### Error: Cannot find module '@repo/...'
 
-Asegúrate de haber ejecutado `npm run build` primero para compilar los packages compartidos.
+Make sure you have run `npm run build` first to compile the shared packages.
 
-### Error: EADDRINUSE :::3001 o :::3000
+### Error: EADDRINUSE :::3001 or :::3000
 
-El puerto ya está en uso. Mata el proceso o cambia el puerto en `.env` (API) o `vite.config.ts` (UI).
+The port is already in use. Kill the process or change the port in `.env` (API) or `vite.config.ts` (UI).
 
-### Tests fallan con errores de módulos
+### Tests fail with module errors
 
-Ejecuta `npm install` en la raíz del proyecto para asegurar que todas las dependencias estén instaladas.
+Run `npm install` at the project root to ensure all dependencies are installed.
 
-## Estructura de Workspaces
+## Workspace Structure
 
-El proyecto usa npm workspaces. Las dependencias internas se resuelven automáticamente:
+The project uses npm workspaces. Internal dependencies are resolved automatically:
 
 ```json
 {
@@ -124,4 +124,4 @@ El proyecto usa npm workspaces. Las dependencias internas se resuelven automáti
 }
 ```
 
-Esto permite que `@repo/api` y `@repo/ui` puedan importar desde `@repo/use-cases` y `@repo/shared` sin necesidad de publicar los packages a npm.
+This allows `@repo/api` and `@repo/ui` to import from `@repo/use-cases` and `@repo/shared` without needing to publish the packages to npm.
