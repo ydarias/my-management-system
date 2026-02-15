@@ -1,21 +1,13 @@
 import { User } from '@repo/shared';
-
-export interface CreateUserInput {
-  email: string;
-  name: string;
-}
-
-export interface UserRepository {
-  save(user: User): Promise<User>;
-  findByEmail(email: string): Promise<User | null>;
-}
+import { CreateUserInput } from './create-user.input';
+import { UserRepository } from './user.repository';
 
 export class CreateUserUseCase {
   constructor(private userRepository: UserRepository) {}
 
   async execute(input: CreateUserInput): Promise<User> {
     const existingUser = await this.userRepository.findByEmail(input.email);
-    
+
     if (existingUser) {
       throw new Error('User with this email already exists');
     }
