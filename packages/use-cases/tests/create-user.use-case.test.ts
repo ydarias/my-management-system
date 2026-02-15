@@ -1,34 +1,14 @@
-import { CreateUserUseCase, UserRepository, CreateUserInput } from '../src/create-user.use-case';
-import { User } from '@repo/shared';
-
-class MockUserRepository implements UserRepository {
-  private users: User[] = [];
-
-  async save(user: User): Promise<User> {
-    this.users.push(user);
-    return user;
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    return this.users.find(u => u.email === email) || null;
-  }
-
-  reset() {
-    this.users = [];
-  }
-}
+import { CreateUserUseCase } from '../src/create-user.use-case';
+import { CreateUserInput, UserRepository } from '../src';
+import { InMemoryUserRepository } from '../src/repositories/in-memory/in-memory-user.repository';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
-  let repository: MockUserRepository;
+  let repository: UserRepository;
 
   beforeEach(() => {
-    repository = new MockUserRepository();
+    repository = new InMemoryUserRepository();
     useCase = new CreateUserUseCase(repository);
-  });
-
-  afterEach(() => {
-    repository.reset();
   });
 
   it('should create a new user successfully', async () => {
@@ -53,9 +33,7 @@ describe('CreateUserUseCase', () => {
 
     await useCase.execute(input);
 
-    await expect(useCase.execute(input)).rejects.toThrow(
-      'User with this email already exists'
-    );
+    await expect(useCase.execute(input)).rejects.toThrow('User with this email already exists');
   });
 
   it('should generate unique IDs for different users', async () => {
