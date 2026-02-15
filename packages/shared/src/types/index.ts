@@ -1,3 +1,8 @@
+export interface UserLoginRequest {
+  email: string;
+  password: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
