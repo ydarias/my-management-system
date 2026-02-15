@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from '../src/create-user.use-case';
-import { CreateUserInput, UserRepository } from '../src';
+import { CreateUserInput, UserAlreadyExistsError, UserRepository } from '../src';
 import { InMemoryUserRepository } from '../src/repositories/in-memory/in-memory-user.repository';
 
 describe('CreateUserUseCase', () => {
@@ -33,7 +33,7 @@ describe('CreateUserUseCase', () => {
 
     await useCase.execute(input);
 
-    await expect(useCase.execute(input)).rejects.toThrow('User with this email already exists');
+    await expect(useCase.execute(input)).rejects.toThrow(UserAlreadyExistsError);
   });
 
   it('should generate unique IDs for different users', async () => {
