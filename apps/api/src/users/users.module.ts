@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CreateUserUseCase } from '@repo/use-cases';
+import { CreateUserUseCase, PasswordHasher, UserRepository } from '@repo/use-cases';
 import { UsersController } from './users.controller';
 
 @Module({
@@ -7,7 +7,7 @@ import { UsersController } from './users.controller';
   providers: [
     {
       provide: CreateUserUseCase,
-      useFactory: (userRepository, passwordHasher) =>
+      useFactory: (userRepository: UserRepository, passwordHasher: PasswordHasher) =>
         new CreateUserUseCase(userRepository, passwordHasher),
       inject: ['UserRepository', 'PasswordHasher'],
     },

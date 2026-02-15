@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { ValidateCredentialsUseCase } from '@repo/use-cases';
+import { User, ValidateCredentialsUseCase } from '@repo/use-cases';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -12,7 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  async validate(email: string, password: string) {
+  async validate(email: string, password: string): Promise<User> {
     return this.validateCredentials.execute(email, password);
   }
 }
