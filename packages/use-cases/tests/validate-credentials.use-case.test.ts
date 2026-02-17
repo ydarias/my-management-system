@@ -1,5 +1,5 @@
 import { CreateUserUseCase, InvalidCredentialsError, ValidateCredentialsUseCase } from '../src';
-import { InMemoryUserRepository } from '../src/repositories/in-memory/in-memory-user.repository';
+import { InMemoryUserRepository } from '../src';
 import { fakePasswordHasher } from './fake-password-hasher';
 
 describe('ValidateCredentialsUseCase', () => {
