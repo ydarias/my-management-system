@@ -1,8 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { GlobalExceptionFilter } from '../src/filters/global-exception.filter';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const request = require('supertest');
 
 describe('API Integration', () => {
   let app: INestApplication;
