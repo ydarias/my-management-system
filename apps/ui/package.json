@@ -16,7 +16,8 @@
     "@repo/shared": "*",
     "@repo/use-cases": "*",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-router-dom": "7.13.0"
   },
   "devDependencies": {
     "@repo/test-config": "*",

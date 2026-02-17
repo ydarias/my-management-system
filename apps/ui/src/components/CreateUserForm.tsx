@@ -2,9 +2,14 @@ import { useState } from 'react';
 import { ApiResponse } from '@repo/shared';
 import { User } from '@repo/use-cases';
 
-export function CreateUserForm() {
+interface CreateUserFormProps {
+  onSuccess?: () => void;
+}
+
+export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<User | null>(null);
@@ -21,7 +26,7 @@ export function CreateUserForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, name }),
+        body: JSON.stringify({ email, name, password }),
       });
 
       const data: ApiResponse<User> = await response.json();
@@ -30,6 +35,8 @@ export function CreateUserForm() {
         setSuccess(data.data);
         setEmail('');
         setName('');
+        setPassword('');
+        onSuccess?.();
       } else {
         setError(data.error || 'Error creating user');
       }
@@ -64,6 +71,18 @@ export function CreateUserForm() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
             disabled={loading}
           />

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js >= 18.0.0
+- Node.js >= 24.0.0
 - npm >= 10.2.4
 
 ## Steps to Run the Project
