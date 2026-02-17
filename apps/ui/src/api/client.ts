@@ -12,5 +12,10 @@ export async function apiClient<T>(
     },
   });
 
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.message || `Request failed with status ${response.status}`);
+  }
+
   return response.json();
 }

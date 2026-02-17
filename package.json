@@ -22,7 +22,8 @@
   },
   "packageManager": "npm@10.2.4",
   "overrides": {
-    "glob": "13.0.3"
+    "glob": "13.0.3",
+    "test-exclude": "7.0.1"
   },
   "engines": {
     "node": ">=24.0.0"

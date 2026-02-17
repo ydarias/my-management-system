@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ApiResponse, UserLoginRequest } from '@repo/shared';
+import { UserLoginRequest } from '@repo/shared';
 import { apiClient } from '../api/client';
 
 interface LoginFormProps {
@@ -19,7 +19,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
     try {
       const body: UserLoginRequest = { email, password };
-      const data = await apiClient<ApiResponse<{ access_token: string }>>(
+      const data = await apiClient<{ access_token: string }>(
         'auth/login',
         {
           method: 'POST',
@@ -27,14 +27,10 @@ export function LoginForm({ onLogin }: LoginFormProps) {
         },
       );
 
-      if (data.success && data.data) {
-        localStorage.setItem('token', data.data.access_token);
-        onLogin(data.data.access_token);
-      } else {
-        setError(data.error || 'Invalid credentials');
-      }
+      localStorage.setItem('token', data.access_token);
+      onLogin(data.access_token);
     } catch (err) {
-      setError('Network error');
+      setError(err instanceof Error ? err.message : 'Network error');
     } finally {
       setLoading(false);
     }

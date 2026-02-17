@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { ApiResponse } from '@repo/shared';
-import { User } from '@repo/use-cases';
+import { UserResponse } from '@repo/shared';
 import { apiClient } from '../api/client';
 
 interface CreateUserFormProps {
@@ -13,7 +12,7 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<User | null>(null);
+  const [success, setSuccess] = useState<UserResponse | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,22 +21,18 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
     setSuccess(null);
 
     try {
-      const data = await apiClient<ApiResponse<User>>('users', {
+      const user = await apiClient<UserResponse>('users', {
         method: 'POST',
         body: JSON.stringify({ email, name, password }),
       });
 
-      if (data.success && data.data) {
-        setSuccess(data.data);
-        setEmail('');
-        setName('');
-        setPassword('');
-        onSuccess?.();
-      } else {
-        setError(data.error || 'Error creating user');
-      }
+      setSuccess(user);
+      setEmail('');
+      setName('');
+      setPassword('');
+      onSuccess?.();
     } catch (err) {
-      setError('Network error');
+      setError(err instanceof Error ? err.message : 'Network error');
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { CreateUserUseCase, CreateUserInput } from '@repo/use-cases';
+import { UserResponse } from '@repo/shared';
 
 @Controller('users')
 export class UsersController {
@@ -8,9 +9,8 @@ export class UsersController {
     private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
-  // TODO use mapping to avoid returning data that should not be returned
   @Post()
-  async createUser(@Body() input: CreateUserInput) {
+  async createUser(@Body() input: CreateUserInput): Promise<UserResponse> {
     const { password, ...user } = await this.createUserUseCase.execute(input);
     return user;
   }

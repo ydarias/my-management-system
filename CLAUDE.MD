@@ -61,6 +61,8 @@ flowchart TD
     ui --> shared
 ```
 
+It is important to note that the `ui` should not use or import from `use-cases`.
+
 Packages must be built (`npm run build`) before apps can import them.
 
 ### Key Patterns
@@ -79,3 +81,4 @@ Packages must be built (`npm run build`) before apps can import them.
   - Unit tests: `file-name.test.ts`
   - Integration tests: `file-name.spec.ts`
 - Node.js >= 24 (see `.nvmrc`). Package manager: npm.
+- Do not use open versions, but fixed ones for dependencies.
