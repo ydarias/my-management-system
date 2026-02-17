@@ -1,14 +1,6 @@
-import { CreateUserUseCase, InvalidCredentialsError, PasswordHasher, ValidateCredentialsUseCase } from '../src';
+import { CreateUserUseCase, InvalidCredentialsError, ValidateCredentialsUseCase } from '../src';
 import { InMemoryUserRepository } from '../src/repositories/in-memory/in-memory-user.repository';
-
-const fakePasswordHasher: PasswordHasher = {
-  async hash(password: string) {
-    return `hashed-${password}`;
-  },
-  async compare(plain: string, hashed: string) {
-    return hashed === `hashed-${plain}`;
-  },
-};
+import { fakePasswordHasher } from './fake-password-hasher';
 
 describe('ValidateCredentialsUseCase', () => {
   let useCase: ValidateCredentialsUseCase;
