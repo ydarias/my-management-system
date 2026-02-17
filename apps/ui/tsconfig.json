@@ -14,7 +14,6 @@
   "include": ["src"],
   "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
   "references": [
-    { "path": "../../packages/shared" },
-    { "path": "../../packages/use-cases" }
+    { "path": "../../packages/shared" }
   ]
 }
