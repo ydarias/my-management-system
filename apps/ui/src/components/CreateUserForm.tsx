@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ApiResponse } from '@repo/shared';
 import { User } from '@repo/use-cases';
+import { apiClient } from '../api/client';
 
 interface CreateUserFormProps {
   onSuccess?: () => void;
@@ -21,15 +22,10 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
     setSuccess(null);
 
     try {
-      const response = await fetch('/users', {
+      const data = await apiClient<ApiResponse<User>>('users', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ email, name, password }),
       });
-
-      const data: ApiResponse<User> = await response.json();
 
       if (data.success && data.data) {
         setSuccess(data.data);

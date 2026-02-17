@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ApiResponse, UserLoginRequest } from '@repo/shared';
+import { apiClient } from '../api/client';
 
 interface LoginFormProps {
   onLogin: (token: string) => void;
@@ -18,16 +19,13 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
     try {
       const body: UserLoginRequest = { email, password };
-      const response = await fetch('/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const data = await apiClient<ApiResponse<{ access_token: string }>>(
+        'auth/login',
+        {
+          method: 'POST',
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      });
-
-      const data: ApiResponse<{ access_token: string }> =
-        await response.json();
+      );
 
       if (data.success && data.data) {
         localStorage.setItem('token', data.data.access_token);
