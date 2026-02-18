@@ -5,10 +5,12 @@ import { BcryptPasswordHasher } from './auth/bcrypt-password-hasher';
 import { TypeOrmUserRepository } from './users/typeorm-user.repository';
 import { UserEntity } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Global()
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST ?? 'localhost',

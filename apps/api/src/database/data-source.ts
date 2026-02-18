@@ -1,6 +1,10 @@
 import 'reflect-metadata';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
+
+dotenv.config({ path: path.resolve(__dirname, `../../.env`) });
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
