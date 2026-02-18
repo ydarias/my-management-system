@@ -1,5 +1,4 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
-import { ApiResponse } from '@repo/shared';
 import { DOMAIN_ERROR_MAPPINGS } from './error-mappings';
 import { Response } from 'express';
 
@@ -15,22 +14,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     for (const [ErrorClass, status] of DOMAIN_ERROR_MAPPINGS) {
       if (exception instanceof ErrorClass) {
-        const body: ApiResponse<null> = {
-          success: false,
-          error: exception.constructor.name,
-          message: (exception as Error).message,
-        };
-        response.status(status).json(body);
+        response.status(status).json({});
         return;
       }
     }
 
-    // TODO not sure about using this ApiResponse construct
-    const body: ApiResponse<null> = {
-      success: false,
-      error: 'InternalServerError',
-      message: 'An unexpected error occurred',
-    };
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(body);
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({});
   }
 }
