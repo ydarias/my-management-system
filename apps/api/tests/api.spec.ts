@@ -1,7 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
+import { InMemoryUserRepository } from '@repo/use-cases';
+import { AuthModule } from '../src/auth/auth.module';
+import { BcryptPasswordHasher } from '../src/auth/bcrypt-password-hasher';
 import { GlobalExceptionFilter } from '../src/filters/global-exception.filter';
+import { UsersModule } from '../src/users/users.module';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const request = require('supertest');
@@ -11,7 +14,11 @@ describe('API Integration', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [UsersModule, AuthModule],
+      providers: [
+        { provide: 'UserRepository', useClass: InMemoryUserRepository },
+        { provide: 'PasswordHasher', useClass: BcryptPasswordHasher },
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
