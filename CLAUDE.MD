@@ -48,7 +48,8 @@ This is a **Turborepo monorepo** with npm workspaces, using **hexagonal architec
 - `apps/api` — NestJS REST API (port 3001). Controllers, auth (Passport + JWT), and adapter implementations.
 - `apps/ui` — React + Vite frontend (port 3000). Proxies `/api` requests to the API.
 - `packages/use-cases` — Business logic layer. Contains **domain models**, use cases, ports (abstract interfaces), repositories, and domain errors. This is the core of the hexagonal architecture — no framework dependencies.
-- `packages/shared` — Cross-package types (`ApiResponse`, `Result`, `UserLoginRequest`) and utility functions.
+- `packages/db` — Database implementation (PostgreSQL, with TypeORM) from the repositories at use-cases.
+- `packages/shared` — Cross-package types (e.g. `UserLoginRequest`) to be used by API and UI as contract.
 - `packages/test-config` — Shared Jest base configuration used by all packages.
 
 ### Dependency Flow
@@ -57,7 +58,8 @@ This is a **Turborepo monorepo** with npm workspaces, using **hexagonal architec
 flowchart TD
     api --> use-cases
     api --> shared
-    use-cases --> shared
+    api --> db
+    db --> use-cases
     ui --> shared
 ```
 
@@ -81,4 +83,4 @@ Packages must be built (`npm run build`) before apps can import them.
   - Unit tests: `file-name.test.ts`
   - Integration tests: `file-name.spec.ts`
 - Node.js >= 24 (see `.nvmrc`). Package manager: npm.
-- Do not use open versions, but fixed ones for dependencies.
+- Do not use open versions, but fixed ones, for dependencies.
