@@ -20,11 +20,14 @@ export class CreateUserUseCase {
 
     const hashedPassword = await this.passwordHasher.hash(input.password);
 
+    const today = new Date();
+
     const user: User = {
       email: input.email,
       name: input.name,
       password: hashedPassword,
-      createdAt: new Date(),
+      createdAt: today,
+      updatedAt: today
     };
 
     return this.userRepository.save(user);

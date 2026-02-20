@@ -1,14 +1,21 @@
-import { CreateUserInput, CreateUserUseCase, UserAlreadyExistsError, UserRepository } from './index';
-import { InMemoryUserRepository } from './index';
-import { fakePasswordHasher } from '../tests/fake-password-hasher';
+import {
+  CreateUserInput,
+  CreateUserUseCase,
+  PasswordHasher,
+  User,
+  UserAlreadyExistsError,
+  UserRepository,
+} from './index';
+import { mock, mockReset } from 'jest-mock-extended';
 
 describe('CreateUserUseCase', () => {
-  let useCase: CreateUserUseCase;
-  let repository: UserRepository;
+  const userRepository = mock<UserRepository>();
+  const passwordHasher = mock<PasswordHasher>();
+  const useCase = new CreateUserUseCase(userRepository, passwordHasher);
 
   beforeEach(() => {
-    repository = new InMemoryUserRepository();
-    useCase = new CreateUserUseCase(repository, fakePasswordHasher);
+    mockReset(userRepository);
+    mockReset(passwordHasher);
   });
 
   it('should create a new user successfully', async () => {
@@ -17,25 +24,33 @@ describe('CreateUserUseCase', () => {
       name: 'Test User',
       password: 'secret123',
     };
+    const hashedSecret = 'hashed-secret123';
+    const transientUser: User = {
+      email: input.email,
+      name: input.name,
+      password: hashedSecret,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    };
+    const persistentUser: User = {
+      id: 1,
+      email: 'test@example.com',
+      name: 'Test User',
+      password: hashedSecret,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    userRepository.findByEmail.calledWith(input.email).mockResolvedValue(null);
+    passwordHasher.hash.calledWith(input.password).mockResolvedValue(hashedSecret);
+    userRepository.save.calledWith(expect.objectContaining(transientUser)).mockResolvedValue(persistentUser);
 
     const result = await useCase.execute(input);
 
     expect(result).toMatchSnapshot({
       createdAt: expect.any(Date),
-      updatedAt: expect.any(Date)
+      updatedAt: expect.any(Date),
     });
-  });
-
-  it('should hash the password before saving', async () => {
-    const input: CreateUserInput = {
-      email: 'test@example.com',
-      name: 'Test User',
-      password: 'secret123',
-    };
-
-    const result = await useCase.execute(input);
-
-    expect(result.password).toBe('hashed-secret123');
   });
 
   it('should throw error if user with email already exists', async () => {
@@ -44,29 +59,18 @@ describe('CreateUserUseCase', () => {
       name: 'Existing User',
       password: 'secret123',
     };
+    const hashedSecret = 'hashed-secret123';
+    const persistentUser: User = {
+      id: 1,
+      email: 'existing@example.com',
+      name: 'Existing User',
+      password: hashedSecret,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    await useCase.execute(input);
+    userRepository.findByEmail.calledWith(input.email).mockResolvedValue(persistentUser);
 
     await expect(useCase.execute(input)).rejects.toThrow(UserAlreadyExistsError);
-  });
-
-  it('should generate unique IDs for different users', async () => {
-    const input1: CreateUserInput = {
-      email: 'user1@example.com',
-      name: 'User 1',
-      password: 'secret123',
-    };
-
-    const input2: CreateUserInput = {
-      email: 'user2@example.com',
-      name: 'User 2',
-      password: 'secret456',
-    };
-
-    const user1 = await useCase.execute(input1);
-    const user2 = await useCase.execute(input2);
-
-    expect(user1.id).toBe(1);
-    expect(user2.id).toBe(2);
   });
 });

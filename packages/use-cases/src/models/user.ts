@@ -4,5 +4,6 @@ export interface User {
   name: string;
   password: string;
   createdAt: Date;
+  // TODO should be mandatory
   updatedAt?: Date;
 }
