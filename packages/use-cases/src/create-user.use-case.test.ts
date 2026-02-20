@@ -1,6 +1,6 @@
-import { CreateUserInput, CreateUserUseCase, UserAlreadyExistsError, UserRepository } from '../src';
-import { InMemoryUserRepository } from '../src';
-import { fakePasswordHasher } from './fake-password-hasher';
+import { CreateUserInput, CreateUserUseCase, UserAlreadyExistsError, UserRepository } from './index';
+import { InMemoryUserRepository } from './index';
+import { fakePasswordHasher } from '../tests/fake-password-hasher';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;

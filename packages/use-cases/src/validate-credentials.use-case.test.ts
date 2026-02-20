@@ -1,6 +1,6 @@
-import { CreateUserUseCase, InvalidCredentialsError, ValidateCredentialsUseCase } from '../src';
-import { InMemoryUserRepository } from '../src';
-import { fakePasswordHasher } from './fake-password-hasher';
+import { CreateUserUseCase, InvalidCredentialsError, ValidateCredentialsUseCase } from './index';
+import { InMemoryUserRepository } from './index';
+import { fakePasswordHasher } from '../tests/fake-password-hasher';
 
 describe('ValidateCredentialsUseCase', () => {
   let useCase: ValidateCredentialsUseCase;
