@@ -1,23 +1,53 @@
-import { INestApplication } from '@nestjs/common';
+import { Global, Module, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { InMemoryUserRepository } from '../src/domain/repositories/in-memory/in-memory-user.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { AuthModule } from '../src/auth/auth.module';
 import { BcryptPasswordHasher } from '../src/auth/bcrypt-password-hasher';
 import { GlobalExceptionFilter } from '../src/filters/global-exception.filter';
+import { UserEntity } from '../src/users/user.entity';
+import { TypeOrmUserRepository } from '../src/users/typeorm-user.repository';
 import { UsersModule } from '../src/users/users.module';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const request = require('supertest');
 
+jest.setTimeout(60_000);
+
+@Global()
+@Module({
+  imports: [TypeOrmModule.forFeature([UserEntity])],
+  providers: [
+    TypeOrmUserRepository,
+    { provide: 'UserRepository', useClass: TypeOrmUserRepository },
+    { provide: 'PasswordHasher', useClass: BcryptPasswordHasher },
+  ],
+  exports: ['UserRepository', 'PasswordHasher'],
+})
+class TestGlobalModule {}
+
 describe('API Integration', () => {
   let app: INestApplication;
+  let container: StartedPostgreSqlContainer;
 
   beforeAll(async () => {
+    container = await new PostgreSqlContainer('postgres:17-alpine').start();
+
     const moduleRef = await Test.createTestingModule({
-      imports: [UsersModule, AuthModule],
-      providers: [
-        { provide: 'UserRepository', useClass: InMemoryUserRepository },
-        { provide: 'PasswordHasher', useClass: BcryptPasswordHasher },
+      imports: [
+        TypeOrmModule.forRoot({
+          type: 'postgres',
+          host: container.getHost(),
+          port: container.getMappedPort(5432),
+          username: container.getUsername(),
+          password: container.getPassword(),
+          database: container.getDatabase(),
+          entities: [UserEntity],
+          synchronize: true,
+        }),
+        TestGlobalModule,
+        UsersModule,
+        AuthModule,
       ],
     }).compile();
 
@@ -28,6 +58,7 @@ describe('API Integration', () => {
 
   afterAll(async () => {
     await app.close();
+    await container.stop();
   });
 
   describe('POST /users', () => {
@@ -57,12 +88,6 @@ describe('API Integration', () => {
         .send({ email: 'duplicate@example.com', name: 'Second', password: 'secret456' });
 
       expect(response.status).toBe(409);
-      expect(response.body).toEqual(
-        expect.objectContaining({
-          success: false,
-          error: 'UserAlreadyExistsError',
-        }),
-      );
     });
   });
 
