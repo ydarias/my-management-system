@@ -1,211 +1,199 @@
-# Turborepo + TypeScript Monorepo
+# My Management System
 
-Monorepo project configured with Turborepo, TypeScript, and a modular architecture that separates use cases from the UI and API.
+A Turborepo monorepo built with NestJS, React, and TypeScript, following hexagonal architecture (ports & adapters).
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-turborepo-project/
+my-management-system/
 ├── apps/
-│   ├── api/              # REST API with Express
-│   │   ├── src/
-│   │   │   ├── routes/
-│   │   │   ├── repositories/
-│   │   │   └── index.ts
-│   │   └── tests/
-│   └── ui/               # React Application with Vite
-│       ├── src/
-│       │   └── components/
-│       └── tests/
+│   ├── api/              # NestJS REST API (port 3001)
+│   └── ui/               # React + Vite frontend (port 3000)
 ├── packages/
-│   ├── shared/           # Shared types and utilities
-│   │   ├── src/
-│   │   │   ├── types/
-│   │   │   └── utils/
-│   │   └── tests/
-│   ├── use-cases/        # Business logic (use cases)
-│   │   ├── src/
-│   │   └── tests/
-│   └── test-config/      # Shared Jest configuration
-│       └── jest.config.js
-├── turbo.json            # Turborepo configuration
-├── tsconfig.base.json    # Base TypeScript config
-└── package.json          # Root package.json
+│   ├── shared/           # Shared request/response types (API contract)
+│   └── test-config/      # Shared Jest base configuration
+├── docker-compose.yml    # PostgreSQL 17
+├── turbo.json
+├── tsconfig.base.json
+└── package.json
 ```
 
-## 🏗️ Architecture
+## Architecture
 
-### Separation of Concerns
+The API follows **hexagonal architecture** (ports & adapters):
 
-- **`@repo/shared`**: TypeScript types, interfaces, and utilities shared across the monorepo
-- **`@repo/use-cases`**: Pure business logic, independent of infrastructure
-- **`@repo/api`**: REST API layer that consumes the use cases
-- **`@repo/ui`**: React user interface that consumes the API
-- **`@repo/test-config`**: Shared test harness configuration (Jest)
+- **Domain layer** (`apps/api/src/domain/`) — use cases, domain models, port interfaces. No external dependencies.
+- **Adapters** (`apps/api/src/database/`, `apps/api/src/auth/`) — concrete implementations of ports (TypeORM, Bcrypt).
+- **Controllers** (`apps/api/src/users/`, `apps/api/src/auth/`) — HTTP entry points. Receive shared request types, return shared response types.
+- **`@repo/shared`** — TypeScript types shared between API and UI as a contract. The UI must not import from the domain layer.
 
-### Advantages of This Architecture
+### Dependency flow
 
-1. **Reusability**: Use cases can be consumed by both the API and directly by the UI
-2. **Testability**: Each layer has its own tests with shared configuration
-3. **Maintainability**: Changes to business logic do not directly affect the UI or API
-4. **Scalability**: Easy to add new apps or packages to the monorepo
+```
+apps/api  ──► @repo/shared
+apps/ui   ──► @repo/shared
+```
 
-## 🚀 Installation
+## Prerequisites
+
+- Node.js 24 (see `.nvmrc`)
+- npm >= 10.2.4
+- Docker (for PostgreSQL)
+
+## Setup
 
 ```bash
-# Install dependencies
+# Use the correct Node version
+nvm use
+
+# Install all dependencies
 npm install
 
-# Install dependencies for all workspaces
-npm install --workspaces
+# Start PostgreSQL
+docker-compose up -d
+
+# Build shared packages (required before first run)
+npm run build
+
+# Run database migrations
+npm run migration:run --workspace=@repo/api
 ```
 
-## 📦 Available Commands
-
-### Development
+## Running in Development
 
 ```bash
-# Start all projects in development mode
+# Run all apps and packages in watch mode
 npm run dev
 
-# Start only the API
+# Run only the API
 npm run dev --workspace=@repo/api
 
-# Start only the UI
+# Run only the UI
 npm run dev --workspace=@repo/ui
 ```
 
-### Build
+## Commands
+
+### Root
 
 ```bash
-# Build all projects
-npm run build
-
-# Build a specific project
-npm run build --workspace=@repo/use-cases
+npm run build      # Build all packages via Turbo
+npm run dev        # Start all packages in watch mode
+npm run test       # Run all tests
+npm run lint       # Type-check all packages (tsc --noEmit)
+npm run format     # Format with Prettier
+npm run clean      # Remove dist/ and node_modules/
 ```
 
-### Testing
+### Per workspace
 
 ```bash
-# Run all tests
+npm run test --workspace=@repo/api
+npm run test --workspace=@repo/ui
+npm run build --workspace=@repo/shared
+```
+
+### Database migrations (API)
+
+```bash
+npm run migration:run --workspace=@repo/api       # Apply pending migrations
+npm run migration:revert --workspace=@repo/api    # Revert last migration
+npm run migration:generate --workspace=@repo/api  # Generate a new migration
+```
+
+## API Endpoints
+
+Base URL: `http://localhost:3001`
+
+| Method | Path          | Auth     | Description     |
+|--------|---------------|----------|-----------------|
+| POST   | `/users`      | None     | Register a user |
+| POST   | `/auth/login` | None     | Log in          |
+
+### POST /users
+
+Request body (`CreateUserRequest`):
+```json
+{ "email": "user@example.com", "name": "Jane Doe", "password": "secret" }
+```
+
+Response (`UserResponse`):
+```json
+{ "id": 1, "email": "user@example.com", "name": "Jane Doe", "createdAt": "...", "updatedAt": "..." }
+```
+
+### POST /auth/login
+
+Request body (`UserLoginRequest`):
+```json
+{ "email": "user@example.com", "password": "secret" }
+```
+
+Response (`LoginResponse`):
+```json
+{ "accessToken": "<jwt>" }
+```
+
+Subsequent requests to protected endpoints must include the header:
+```
+Authorization: Bearer <accessToken>
+```
+
+## Shared Types (`@repo/shared`)
+
+| Type                | Kind        | Used as             |
+|---------------------|-------------|---------------------|
+| `CreateUserRequest` | class       | POST /users body    |
+| `UserLoginRequest`  | interface   | POST /auth/login body |
+| `UserResponse`      | interface   | POST /users response |
+| `LoginResponse`     | interface   | POST /auth/login response |
+
+## Environment Variables
+
+Create a `.env` file inside `apps/api/` (defaults shown):
+
+```bash
+PORT=3001
+NODE_ENV=development
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=my_management_system
+```
+
+The Docker Compose file starts PostgreSQL with user `user`, password `password`, and database `my_management_system`. Override with the variables above if needed.
+
+## Testing
+
+```bash
+# All tests
 npm run test
 
-# Tests with coverage
-npm run test --workspace=@repo/use-cases -- --coverage
+# Watch mode for a workspace
+npm run test:watch --workspace=@repo/api
 
-# Tests in watch mode
-npm run test --workspace=@repo/api -- --watch
+# Coverage for a workspace
+npm run test:coverage --workspace=@repo/api
+
+# Single file
+npx jest --config apps/api/jest.config.js path/to/file.test.ts
 ```
 
-### Other
+Test file conventions:
+- Unit tests: `file-name.test.ts` — placed next to the file under test
+- Integration tests: `file-name.spec.ts`
 
-```bash
-# Linting
-npm run lint
+All packages share the base Jest configuration from `@repo/test-config` (ts-jest, path aliases, 10 s timeout).
 
-# Formatting with Prettier
-npm run format
+## Tech Stack
 
-# Clean generated files
-npm run clean
-```
-
-## 🧪 Shared Test Harness
-
-All packages use the same base Jest configuration located in `@repo/test-config`:
-
-```javascript
-// In each jest.config.js
-const baseConfig = require('@repo/test-config/jest.config');
-
-module.exports = {
-  ...baseConfig,
-  displayName: 'package-name',
-  // Package-specific configuration
-};
-```
-
-### Test Harness Features
-
-- **ts-jest** for TypeScript support
-- **Path aliases** with `@/` for relative imports
-- **Coverage** configured by default
-- **Timeout** of 10 seconds per test
-- Support for `.spec.ts` and `.test.ts`
-
-## 🔄 Development Workflow
-
-### Adding a New Use Case
-
-1. Create the use case in `packages/use-cases/src/`
-2. Write tests in `packages/use-cases/tests/`
-3. Export from `packages/use-cases/src/index.ts`
-4. Consume from the API or UI
-
-Example:
-
-```typescript
-// packages/use-cases/src/my-use-case.ts
-export class MyUseCase {
-  async execute(input: MyInput): Promise<MyOutput> {
-    // Business logic
-  }
-}
-
-// apps/api/src/routes/my.routes.ts
-import { MyUseCase } from '@repo/use-cases';
-
-const useCase = new MyUseCase(dependencies);
-const result = await useCase.execute(input);
-```
-
-### Adding a New App
-
-```bash
-mkdir -p apps/new-app
-cd apps/new-app
-npm init -y
-```
-
-Then add the necessary dependencies and configure TypeScript.
-
-## 🌐 API Endpoints
-
-The API runs by default on `http://localhost:3001`:
-
-- `GET /health` - Health check
-- `POST /api/users` - Create user
-- `GET /api/users` - List users
-- `GET /api/users/:id` - Get user by ID
-
-## 🎨 UI
-
-The UI runs by default on `http://localhost:3000` and automatically connects to the API via the proxy configured in Vite.
-
-## 📝 Important Notes
-
-- **TypeScript References**: Packages use TypeScript project references for incremental builds
-- **Workspaces**: npm workspaces handles internal dependencies automatically
-- **Turbo Cache**: Turborepo caches build and test results for improved speed
-- **Test Isolation**: Each package has its own tests but shares configuration
-
-## 🔧 TypeScript Configuration
-
-The project uses a shared base configuration (`tsconfig.base.json`) that is extended by each package/app according to its specific needs.
-
-## 🎯 Next Steps
-
-1. Configure ESLint for code linting
-2. Add more use cases based on business needs
-3. Implement authentication and authorization
-4. Add a real database (PostgreSQL, MongoDB, etc.)
-5. Set up CI/CD with GitHub Actions or similar
-6. Add Storybook for UI component documentation
-
-## 📚 Resources
-
-- [Turborepo Documentation](https://turbo.build/repo/docs)
-- [npm Workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces)
-- [TypeScript Project References](https://www.typescriptlang.org/docs/handbook/project-references.html)
-- [Jest Documentation](https://jestjs.io/)
+| Layer       | Technology                                      |
+|-------------|-------------------------------------------------|
+| API         | NestJS, Passport (Local + JWT), TypeORM, bcrypt |
+| Database    | PostgreSQL 17 (via Docker)                      |
+| UI          | React 19, React Router 7, Vite 7                |
+| Shared      | TypeScript                                      |
+| Build       | Turborepo, tsc                                  |
+| Testing     | Jest, ts-jest, jest-mock-extended, Testcontainers |
+| Formatting  | Prettier                                        |
