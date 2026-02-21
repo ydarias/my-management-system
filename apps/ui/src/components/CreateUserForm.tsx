@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { UserResponse } from '@repo/shared';
+import { CreateUserRequest, UserResponse } from '@repo/shared';
 import { apiClient } from '../api/client';
 
 interface CreateUserFormProps {
@@ -21,9 +21,14 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
     setSuccess(null);
 
     try {
+      const body: CreateUserRequest = {
+        email,
+        name,
+        password,
+      };
       const user = await apiClient<UserResponse>('users', {
         method: 'POST',
-        body: JSON.stringify({ email, name, password }),
+        body: JSON.stringify(body),
       });
 
       setSuccess(user);
