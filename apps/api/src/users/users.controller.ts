@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { CreateUserUseCase } from '../domain/create-user.use-case';
-import { CreateUserInput } from '../domain/models/creational/create-user.input';
-import { UserResponse } from '@repo/shared';
+import { CreateUserRequest, UserResponse } from '@repo/shared';
+import { UserMapper } from './mappers/user.mapper';
 
 @Controller('users')
 export class UsersController {
@@ -11,8 +11,8 @@ export class UsersController {
   ) {}
 
   @Post()
-  async createUser(@Body() input: CreateUserInput): Promise<UserResponse> {
-    const { password, ...user } = await this.createUserUseCase.execute(input);
-    return user;
+  async createUser(@Body() request: CreateUserRequest): Promise<UserResponse> {
+    const user = await this.createUserUseCase.execute(UserMapper.toCreateUserInput(request));
+    return UserMapper.toUserResponse(user);
   }
 }

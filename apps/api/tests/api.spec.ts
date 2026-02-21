@@ -104,8 +104,9 @@ describe('API Integration', () => {
         .send({ email: 'login@example.com', password: 'mypassword' });
 
       expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('access_token');
-      expect(typeof response.body.access_token).toBe('string');
+      // TODO make the tests safed with a mock for the PasswordHasher
+      expect(response.body).toHaveProperty('accessToken');
+      expect(typeof response.body.accessToken).toBe('string');
     });
 
     it('should return 401 for invalid credentials', async () => {
