@@ -1,5 +1,6 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
-import { CreateUserUseCase, CreateUserInput } from '@repo/use-cases';
+import { CreateUserUseCase } from '../domain/create-user.use-case';
+import { CreateUserInput } from '../domain/models/creational/create-user.input';
 import { UserResponse } from '@repo/shared';
 
 @Controller('users')

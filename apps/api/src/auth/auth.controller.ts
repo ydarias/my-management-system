@@ -1,6 +1,6 @@
 import { Controller, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from '@repo/use-cases';
+import { User } from '../domain/models/user';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')

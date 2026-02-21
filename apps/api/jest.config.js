@@ -5,7 +5,6 @@ module.exports = {
   displayName: 'api',
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
-    '^@repo/use-cases$': '<rootDir>/../../packages/use-cases/src/index.ts',
     '^@repo/shared$': '<rootDir>/../../packages/shared/src/index.ts',
   },
 };

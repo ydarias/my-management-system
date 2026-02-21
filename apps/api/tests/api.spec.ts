@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { InMemoryUserRepository } from '@repo/use-cases';
+import { InMemoryUserRepository } from '../src/domain/repositories/in-memory/in-memory-user.repository';
 import { AuthModule } from '../src/auth/auth.module';
 import { BcryptPasswordHasher } from '../src/auth/bcrypt-password-hasher';
 import { GlobalExceptionFilter } from '../src/filters/global-exception.filter';

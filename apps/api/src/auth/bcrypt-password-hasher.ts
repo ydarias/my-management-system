@@ -1,4 +1,4 @@
-import { PasswordHasher } from '@repo/use-cases';
+import { PasswordHasher } from '../domain/ports/password-hasher';
 import * as bcrypt from 'bcrypt';
 
 export class BcryptPasswordHasher implements PasswordHasher {

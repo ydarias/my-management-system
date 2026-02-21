@@ -1,12 +1,10 @@
-import {
-  CreateUserInput,
-  CreateUserUseCase,
-  PasswordHasher,
-  User,
-  UserAlreadyExistsError,
-  UserRepository,
-} from './index';
 import { mock, mockReset } from 'jest-mock-extended';
+import { CreateUserInput } from './models/creational/create-user.input';
+import { CreateUserUseCase } from './create-user.use-case';
+import { PasswordHasher } from './ports/password-hasher';
+import { User } from './models/user';
+import { UserAlreadyExistsError } from './errors/user-already-exists.error';
+import { UserRepository } from './repositories/user.repository';
 
 describe('CreateUserUseCase', () => {
   const userRepository = mock<UserRepository>();

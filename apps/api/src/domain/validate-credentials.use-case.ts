@@ -1,7 +1,7 @@
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { User } from './models/user';
 import { PasswordHasher } from './ports/password-hasher';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './repositories/user.repository';
 
 export class ValidateCredentialsUseCase {
   constructor(

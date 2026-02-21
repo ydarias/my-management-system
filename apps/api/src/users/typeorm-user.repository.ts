@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRepository, User } from '@repo/use-cases';
+import { UserRepository } from '../domain/repositories/user.repository';
+import { User } from '../domain/models/user';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 

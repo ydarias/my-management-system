@@ -1,5 +1,5 @@
 import { mock, mockReset } from 'jest-mock-extended';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './repositories/user.repository';
 import { PasswordHasher } from './ports/password-hasher';
 import { ValidateCredentialsUseCase } from './validate-credentials.use-case';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
