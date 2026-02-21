@@ -5,8 +5,8 @@ import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers
 import { AuthModule } from '../src/auth/auth.module';
 import { BcryptPasswordHasher } from '../src/auth/bcrypt-password-hasher';
 import { GlobalExceptionFilter } from '../src/filters/global-exception.filter';
-import { UserEntity } from '../src/users/user.entity';
-import { TypeOrmUserRepository } from '../src/users/typeorm-user.repository';
+import { UserEntity } from '../src/database/entities/user.entity';
+import { TypeOrmUserRepository } from '../src/database/repositories/typeorm-user.repository';
 import { UsersModule } from '../src/users/users.module';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports

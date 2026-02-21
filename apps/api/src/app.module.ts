@@ -2,8 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { BcryptPasswordHasher } from './auth/bcrypt-password-hasher';
-import { TypeOrmUserRepository } from './users/typeorm-user.repository';
-import { UserEntity } from './users/user.entity';
+import { TypeOrmUserRepository } from './database/repositories/typeorm-user.repository';
+import { UserEntity } from './database/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 
