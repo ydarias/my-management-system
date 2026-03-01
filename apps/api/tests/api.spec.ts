@@ -70,7 +70,7 @@ describe('API Integration', () => {
       expect(response.status).toBe(201);
       expect(response.body).toEqual(
         expect.objectContaining({
-          id: expect.any(Number),
+          id: expect.any(String),
           email: 'john@example.com',
           name: 'John Doe',
         }),

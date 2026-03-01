@@ -9,7 +9,7 @@ export class GetUserTeamsUseCase {
     private teamRepository: TeamRepository,
   ) {}
 
-  async execute(userId: number): Promise<Team[]> {
+  async execute(userId: string): Promise<Team[]> {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {

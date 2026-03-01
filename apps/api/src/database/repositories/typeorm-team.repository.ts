@@ -14,11 +14,11 @@ export class TypeOrmTeamRepository implements TeamRepository {
     return this.repository.save(team);
   }
 
-  async findByUserId(userId: number): Promise<Team[]> {
+  async findByUserId(userId: string): Promise<Team[]> {
     return this.repository.find({ where: { owner: { id: userId } } });
   }
 
-  async findById(id: number): Promise<Team | null> {
+  async findById(id: string): Promise<Team | null> {
     return this.repository.findOne({ where: { id } });
   }
 }

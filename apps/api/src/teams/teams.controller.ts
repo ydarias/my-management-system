@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateTeamUseCase } from '../domain/create-team.use-case';
 import { GetUserTeamsUseCase } from '../domain/get-user-teams.use-case';
@@ -17,7 +17,7 @@ export class TeamsController {
 
   @Post()
   async createTeam(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId') userId: string,
     @Body() request: CreateTeamRequest,
   ): Promise<TeamResponse> {
     const team = await this.createTeamUseCase.execute(TeamMapper.toCreateTeamInput(userId, request));
@@ -26,7 +26,7 @@ export class TeamsController {
 
   @Get()
   async getUserTeams(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId') userId: string,
   ): Promise<TeamResponse[]> {
     const teams = await this.getUserTeamsUseCase.execute(userId);
     return teams.map(TeamMapper.toTeamResponse);

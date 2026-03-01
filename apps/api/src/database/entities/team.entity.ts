@@ -13,8 +13,8 @@ import { User } from '../../domain/models/user';
 
 @Entity('teams')
 export class TeamEntity implements Team {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @ManyToOne(() => UserEntity, { eager: true })
   @JoinColumn({ name: 'user_id' })

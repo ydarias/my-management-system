@@ -3,7 +3,7 @@ import { CreateTeamInput } from '../../domain/models/creational/create-team.inpu
 import { Team } from '../../domain/models/team';
 
 export class TeamMapper {
-  static toCreateTeamInput(userId: number, request: CreateTeamRequest): CreateTeamInput {
+  static toCreateTeamInput(userId: string, request: CreateTeamRequest): CreateTeamInput {
     return {
       userId,
       name: request.name,

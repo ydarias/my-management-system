@@ -1,6 +1,6 @@
 export interface TeamResponse {
-  id?: number;
-  ownerId: number;
+  id?: string;
+  ownerId: string;
   name: string;
   notes?: string;
   createdAt: Date;

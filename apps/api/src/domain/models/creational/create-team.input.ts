@@ -1,5 +1,5 @@
 export interface CreateTeamInput {
-  userId: number;
+  userId: string;
   name: string;
   notes?: string;
 }

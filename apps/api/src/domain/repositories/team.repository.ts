@@ -2,6 +2,6 @@ import { Team } from '../models/team';
 
 export interface TeamRepository {
   save(team: Team): Promise<Team>;
-  findByUserId(userId: number): Promise<Team[]>;
-  findById(id: number): Promise<Team | null>;
+  findByUserId(userId: string): Promise<Team[]>;
+  findById(id: string): Promise<Team | null>;
 }
