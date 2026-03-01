@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CreateTeamUseCase should create a team successfully 1`] = `
+{
+  "createdAt": Any<Date>,
+  "id": 1,
+  "name": "Engineering",
+  "notes": "Main engineering team",
+  "owner": {
+    "createdAt": Any<Date>,
+    "email": "owner@example.com",
+    "id": 1,
+    "name": "Owner",
+    "password": "hashed",
+    "updatedAt": Any<Date>,
+  },
+  "updatedAt": Any<Date>,
+}
+`;
